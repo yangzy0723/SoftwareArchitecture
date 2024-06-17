@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache maxBytesLocalHeap="30K">
+    <!-- 磁盘缓存文件的路径 -->
+    <diskStore path="user.dir/Ehcache"/>
+
+    <defaultCache eternal="false"
+                  timeToIdleSeconds="123" timeToLiveSeconds="311"
+                  maxBytesLocalHeap="13K" overflowToDisk="false" diskPersistent="false"
+                  memoryStoreEvictionPolicy="LRU">
+    </defaultCache>
+
+    <!--名为Products的缓存-->
+    <cache name="Products" eternal="false"
+           timeToIdleSeconds="0" timeToLiveSeconds="300"
+           maxBytesLocalHeap="12K" overflowToDisk="false" diskPersistent="false"
+           memoryStoreEvictionPolicy="LRU">
+    </cache>
+</ehcache>

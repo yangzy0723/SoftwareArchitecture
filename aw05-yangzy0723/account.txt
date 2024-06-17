@@ -1,0 +1,10 @@
+csc 123456
+wk 123456
+wk-root wk123456
+
+useradd -m username
+passwd username
+gpasswd -a username docker	#将普通用户username加入到docker组中
+newgrp docker	#更新docker组
+
+

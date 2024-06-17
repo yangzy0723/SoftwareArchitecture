@@ -1,0 +1,337 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Carts
+  license:
+    name: MIT
+paths:
+  /products:
+    get:
+      summary: List all products
+      operationId: listProducts
+      tags:
+        - products
+      responses:
+        '200':
+          description: A paged array of products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /products/{productId}:
+    get:
+      summary: Info for a specific product
+      operationId: showProductById
+      tags:
+        - product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The id of the product to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+  /cart:
+    get:
+      summary: List current cart
+      operationId: GetCart
+      tags:
+        - carts
+      responses:
+        '200':
+          description: Get current cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Checkout this cart
+      operationId: CheckOutCart
+      tags:
+        - carts
+      responses:
+        '200':
+          description: Checkout and return the order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+    delete:
+      summary: Empty current cart
+      operationId: EmptyCart
+      tags:
+        - carts
+      responses:
+        '200':
+          description: Empty current cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /cart/{productId}:
+    post:
+      summary: add or modify a product in cart
+      operationId: updateProductInCart
+      tags:
+        - carts
+      parameters:
+        - name: productId
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+        - name: quantity
+          in: query
+          description: Product quantity
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: update a item in cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      summary: delete a item in cart
+      operationId: deleteProductInCart
+      tags:
+        - carts
+      parameters:
+        - name: productId
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete a item in cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /order/all:
+    get:
+      summary: Get all orders
+      operationId: AllOrders
+      tags:
+        - order
+      responses:
+        '200':
+          description: Get all orders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Orders"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /order/new:
+    post:
+      summary: submit a new order
+      operationId: AddOrder
+      tags:
+        - order
+      requestBody:
+        description: create a new order from current cart
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Item"
+      responses:
+        '200':
+          description: return the new order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /order/{orderId}:
+    get:
+      summary: get a special order
+      operationId: GetOrderById
+      tags:
+        - order
+      parameters:
+        - name: orderId
+          in: path
+          description: order id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: return the order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      summary: deliver a order
+      operationId: deliverOrderById
+      tags:
+        - order
+      parameters:
+        - name: orderId
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: return the order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - price
+        - image
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        image:
+          type: string
+
+    Products:
+      type: array
+      items:
+        $ref: "#/components/schemas/Product"
+
+    Item:
+      type: object
+      required:
+        - productId
+        - quantity
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: number
+
+    Cart:
+      type: array
+      items:
+        $ref: "#/components/schemas/Item"
+
+    Order:
+      type: object
+      required:
+        - id
+        - items
+      properties:
+        id:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
+    Orders:
+      type: array
+      items:
+        $ref: "#/components/schemas/Order"
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+    Success:
+      type: boolean
